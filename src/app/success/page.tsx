@@ -21,8 +21,8 @@ export default function SuccessPage() {
 
   useEffect(() => {
     if (sessionId) {
-      // In a real app, you'd verify the session with your backend
-      // For now, we'll just set it as verified
+      // In a real app, you would verify the session with your backend
+      // For now, we will just set it as verified
       setIsVerified(true);
     }
   }, [sessionId]);

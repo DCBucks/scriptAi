@@ -614,8 +614,8 @@ const UpgradePrompt = ({
             Upgrade to Premium
           </h3>
           <p className="text-orange-200">
-            You've reached your free transcription limit. Upgrade to premium for
-            unlimited transcriptions!
+            You&apos;ve reached your free transcription limit. Upgrade to
+            premium for unlimited transcriptions!
           </p>
         </div>
       </div>

@@ -52,7 +52,7 @@ export default function SupportPage() {
             Support
           </h1>
           <p className="text-xl text-orange-300 max-w-2xl mx-auto leading-relaxed">
-            Need help with ScriptAi? We're here to assist you.
+            Need help with ScriptAi? We&apos;re here to assist you.
           </p>
         </div>
 
