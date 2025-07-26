@@ -6,7 +6,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2024-12-18.acacia",
 });
 
-const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!;
+const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
 export async function POST(req: NextRequest) {
   try {
@@ -17,6 +17,11 @@ export async function POST(req: NextRequest) {
     if (!signature) {
       console.error("No Stripe signature found");
       return NextResponse.json({ error: "No signature" }, { status: 400 });
+    }
+
+    if (!webhookSecret) {
+      console.error("STRIPE_WEBHOOK_SECRET not configured");
+      return NextResponse.json({ error: "Webhook not configured" }, { status: 500 });
     }
 
     let event: Stripe.Event;
