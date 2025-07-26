@@ -45,7 +45,7 @@ export default function LandingPage() {
       icon: <Mic className="w-6 h-6" />,
       title: "High-Quality Transcription",
       description:
-        "Crystal clear audio-to-text conversion powered by OpenAI's Whisper technology",
+        "Crystal clear audio-to-text conversion powered by OpenAI&apos;s Whisper technology",
     },
     {
       icon: <Download className="w-6 h-6" />,

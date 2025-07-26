@@ -705,7 +705,7 @@ export default function AudioSummarizer() {
         };
         setUploadedFile(uploadedFile);
         setError(null);
-        // Don't automatically start processing - let user click "Process with AI"
+        // Do not automatically start processing - let user click "Process with AI"
       } catch (err) {
         setError("Failed to process audio file");
       }
@@ -816,7 +816,7 @@ export default function AudioSummarizer() {
           const initialMessage: ChatMessage = {
             id: Date.now().toString(),
             type: "ai",
-            content: `I've analyzed your meeting and here's what I found:\n\n**Summary:** ${result.summary.mainSummary}\n\n**Key Points:**\n${result.summary.bulletPoints.map((point: string) => `• ${point}`).join("\n")}\n\nFeel free to ask me any specific questions about the meeting!`,
+            content: `I&apos;ve analyzed your meeting and here&apos;s what I found:\n\n**Summary:** ${result.summary.mainSummary}\n\n**Key Points:**\n${result.summary.bulletPoints.map((point: string) => `• ${point}`).join("\n")}\n\nFeel free to ask me any specific questions about the meeting!`,
             timestamp: new Date(),
           };
 

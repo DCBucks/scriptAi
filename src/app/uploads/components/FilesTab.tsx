@@ -468,7 +468,7 @@ export default function FilesTab({
             No files found
           </h3>
           <p className="text-orange-300">
-            Try adjusting your search or filters to find what you're looking
+            Try adjusting your search or filters to find what you&apos;re looking
             for.
           </p>
         </div>

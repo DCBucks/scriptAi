@@ -19,7 +19,7 @@ import {
   Mic,
 } from "lucide-react";
 import Link from "next/link";
-import { createCheckoutSession } from "@/lib/stripe";
+import { createCheckoutSession } from "../../lib/stripe";
 
 export default function UpgradePage() {
   const [isNavOpen, setIsNavOpen] = useState(false);

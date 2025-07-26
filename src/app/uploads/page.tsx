@@ -266,7 +266,7 @@ export default function UploadsPage() {
   const [showActions, setShowActions] = useState<string | null>(null);
   const [isNavOpen, setIsNavOpen] = useState(false);
 
-  // Load user's audio files from Supabase
+  // Load user audio files from Supabase
   useEffect(() => {
     async function loadUserFiles() {
       if (!userId) {
