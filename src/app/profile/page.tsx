@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useUser } from "../../hooks/useUser";
+import Link from "next/link";
 import {
   User,
   Mail,
@@ -170,13 +171,13 @@ export default function ProfilePage() {
         {/* Header */}
         <div className="mb-8 pt-20">
           <div className="flex items-center mb-6">
-            <a
+            <Link
               href="/"
               className="flex items-center space-x-2 text-orange-300 hover:text-primary transition-colors duration-300 mr-6"
             >
               <ArrowLeft className="w-5 h-5" />
               <span>Back to Dashboard</span>
-            </a>
+            </Link>
           </div>
 
           <div className="flex items-center justify-between">
@@ -386,13 +387,13 @@ export default function ProfilePage() {
                 {/* Upgrade Button */}
                 {billingInfo.plan === "free" && (
                   <div className="pt-4 border-t border-border/30">
-                    <a
+                    <Link
                       href="/upgrade"
                       className="w-full flex items-center justify-center space-x-2 bg-gradient-to-r from-orange-500 to-yellow-500 hover:from-orange-600 hover:to-yellow-600 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg"
                     >
                       <Crown className="w-5 h-5" />
                       <span>Upgrade to Premium</span>
-                    </a>
+                    </Link>
                   </div>
                 )}
 

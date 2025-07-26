@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useUser } from "../hooks/useUser";
 import { useClerk } from "@clerk/nextjs";
 import { ChevronDown, LogOut, User, Users } from "lucide-react";
+import Link from "next/link";
 
 export default function UserEmailDisplay() {
   const { clerkUser, isSignedIn } = useUser();
@@ -66,21 +67,21 @@ export default function UserEmailDisplay() {
                 </div>
 
                 <div className="space-y-1">
-                  <a
+                  <Link
                     href="/team"
                     className="w-full flex items-center space-x-3 px-3 py-2 text-orange-300 hover:text-primary hover:bg-primary/10 rounded-lg transition-all duration-300 group"
                   >
                     <Users className="w-4 h-4 group-hover:scale-110 transition-transform duration-300" />
                     <span className="text-sm font-medium">Team</span>
-                  </a>
+                  </Link>
 
-                  <a
+                  <Link
                     href="/profile"
                     className="w-full flex items-center space-x-3 px-3 py-2 text-orange-300 hover:text-primary hover:bg-primary/10 rounded-lg transition-all duration-300 group"
                   >
                     <User className="w-4 h-4 group-hover:scale-110 transition-transform duration-300" />
                     <span className="text-sm font-medium">Profile</span>
-                  </a>
+                  </Link>
 
                   <div className="border-t border-primary/20 my-1"></div>
 
