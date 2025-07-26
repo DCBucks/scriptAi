@@ -67,9 +67,18 @@ export async function syncUserWithSupabase(userData: UserData) {
     console.error("Error syncing user with Supabase:", error);
     console.error("Error details:", {
       message: error instanceof Error ? error.message : "Unknown error",
-      code: (error as any)?.code,
-      details: (error as any)?.details,
-      hint: (error as any)?.hint,
+      code:
+        error && typeof error === "object" && "code" in error
+          ? (error as { code: unknown }).code
+          : undefined,
+      details:
+        error && typeof error === "object" && "details" in error
+          ? (error as { details: unknown }).details
+          : undefined,
+      hint:
+        error && typeof error === "object" && "hint" in error
+          ? (error as { hint: unknown }).hint
+          : undefined,
     });
     throw error;
   }
@@ -77,7 +86,7 @@ export async function syncUserWithSupabase(userData: UserData) {
 
 export async function getUserFromSupabase(clerkUserId: string) {
   try {
-    console.log('Fetching user from Supabase:', clerkUserId);
+    console.log("Fetching user from Supabase:", clerkUserId);
     const { data, error } = await supabase
       .from("users")
       .select("*")
@@ -85,18 +94,27 @@ export async function getUserFromSupabase(clerkUserId: string) {
       .single();
 
     if (error) {
-      console.error('Supabase error:', error);
+      console.error("Supabase error:", error);
       throw error;
     }
-    console.log('User fetched successfully:', data?.id);
+    console.log("User fetched successfully:", data?.id);
     return data;
   } catch (error) {
     console.error("Error fetching user from Supabase:", error);
-    console.error('Error details:', {
-      message: error instanceof Error ? error.message : 'Unknown error',
-      code: (error as any)?.code,
-      details: (error as any)?.details,
-      hint: (error as any)?.hint
+    console.error("Error details:", {
+      message: error instanceof Error ? error.message : "Unknown error",
+      code:
+        error && typeof error === "object" && "code" in error
+          ? (error as { code: unknown }).code
+          : undefined,
+      details:
+        error && typeof error === "object" && "details" in error
+          ? (error as { details: unknown }).details
+          : undefined,
+      hint:
+        error && typeof error === "object" && "hint" in error
+          ? (error as { hint: unknown }).hint
+          : undefined,
     });
     throw error;
   }
