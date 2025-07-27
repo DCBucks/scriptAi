@@ -68,6 +68,7 @@ import {
 } from "lucide-react";
 import FilesTab from "./components/FilesTab";
 import TasksTab from "./components/TasksTab";
+import PageErrorBoundary from "../../components/PageErrorBoundary";
 
 // Navigation Component
 const NavigationDrawer = ({
@@ -229,23 +230,38 @@ interface Analytics {
 
 function UploadsContent() {
   const router = useRouter();
-  const { userId, isSignedIn, isLoaded, isInitialized } = useUser();
+  const { userId, isSignedIn, isLoaded, isInitialized, error } = useUser();
 
-  // Redirect to landing page if not authenticated
+  // Handle authentication redirect
   useEffect(() => {
-    if (isLoaded && !isSignedIn) {
+    if (isLoaded && isInitialized && !isSignedIn) {
       router.push("/landing");
+      return;
     }
-  }, [isLoaded, isSignedIn, router]);
+  }, [isLoaded, isInitialized, isSignedIn, router]);
 
   // Show loading state while checking authentication
   if (!isLoaded || !isInitialized) {
-    return <LoadingSpinner />;
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-orange-300 text-xl">Loading...</p>
+        </div>
+      </div>
+    );
   }
 
   // Don't render content if not signed in (will redirect)
-  if (!isSignedIn) {
-    return null;
+  if (!isSignedIn || error) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-orange-300">Redirecting...</p>
+        </div>
+      </div>
+    );
   }
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -278,7 +294,7 @@ function UploadsContent() {
   // Load user audio files from Supabase
   useEffect(() => {
     async function loadUserFiles() {
-      if (!userId) {
+      if (!userId || !isSignedIn || !isInitialized) {
         setIsLoading(false);
         return;
       }
@@ -302,14 +318,15 @@ function UploadsContent() {
               const summaryData = await getSummaryByAudioFileId(file.id);
               if (summaryData) {
                 summary = {
-                  mainSummary: summaryData.main_summary,
-                  bulletPoints: summaryData.bullet_points,
-                  keyTopics: summaryData.key_topics,
-                  actionItems: summaryData.action_items,
+                  mainSummary: summaryData.main_summary || "",
+                  bulletPoints: summaryData.bullet_points || [],
+                  keyTopics: summaryData.key_topics || [],
+                  actionItems: summaryData.action_items || [],
                 };
               }
             } catch (error) {
               console.log("No summary found for file:", file.id);
+              // Continue with default empty summary
             }
 
             return {
@@ -336,13 +353,16 @@ function UploadsContent() {
         setAnalytics(null); // Not implemented yet
       } catch (error) {
         console.error("Error loading user files:", error);
+        // Set empty state on error instead of crashing
+        setUploadedFiles([]);
+        setAnalytics(null);
       } finally {
         setIsLoading(false);
       }
     }
 
     loadUserFiles();
-  }, [userId]);
+  }, [userId, isSignedIn, isInitialized]);
 
   // Regenerate tasks whenever uploadedFiles changes
   useEffect(() => {
@@ -830,9 +850,17 @@ function UploadsContent() {
 }
 
 // Disable SSR for this page to prevent hydration issues
-const UploadsPage = dynamic(() => Promise.resolve(UploadsContent), {
-  ssr: false,
-  loading: () => <LoadingSpinner />,
-});
+const UploadsPage = dynamic(
+  () =>
+    Promise.resolve(() => (
+      <PageErrorBoundary pageName="Uploads">
+        <UploadsContent />
+      </PageErrorBoundary>
+    )),
+  {
+    ssr: false,
+    loading: () => <LoadingSpinner />,
+  }
+);
 
 export default UploadsPage;

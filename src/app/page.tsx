@@ -5,6 +5,7 @@ import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "../hooks/useUser";
 import UserEmailDisplay from "../components/UserEmailDisplay";
+import PageErrorBoundary from "../components/PageErrorBoundary";
 import {
   saveAudioFile,
   saveSummary,
@@ -643,17 +644,25 @@ const UpgradePrompt = ({
 
 function MainPageContent() {
   const router = useRouter();
-  const { clerkUser, isSignedIn, isLoaded, userId } = useUser();
+  const {
+    clerkUser,
+    isSignedIn,
+    isLoaded,
+    userId,
+    isInitialized,
+    error: authError,
+  } = useUser();
 
-  // Redirect to landing page if not authenticated
+  // Handle authentication redirect
   useEffect(() => {
-    if (isLoaded && !isSignedIn) {
+    if (isLoaded && isInitialized && !isSignedIn) {
       router.push("/landing");
+      return;
     }
-  }, [isLoaded, isSignedIn, router]);
+  }, [isLoaded, isInitialized, isSignedIn, router]);
 
   // Show loading state while checking authentication
-  if (!isLoaded) {
+  if (!isLoaded || !isInitialized) {
     return (
       <div className="min-h-screen bg-background text-primary flex items-center justify-center">
         <div className="text-center">
@@ -665,8 +674,15 @@ function MainPageContent() {
   }
 
   // Don't render content if not signed in (will redirect)
-  if (!isSignedIn) {
-    return null;
+  if (!isSignedIn || authError) {
+    return (
+      <div className="min-h-screen bg-background text-primary flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-orange-300">Redirecting...</p>
+        </div>
+      </div>
+    );
   }
   const [uploadedFile, setUploadedFile] = useState<UploadedFile | null>(null);
   const [processingStatus, setProcessingStatus] = useState<ProcessingStatus>({
@@ -1200,16 +1216,24 @@ function MainPageContent() {
 }
 
 // Disable SSR for this page to prevent hydration issues
-const AudioSummarizer = dynamic(() => Promise.resolve(MainPageContent), {
-  ssr: false,
-  loading: () => (
-    <div className="min-h-screen bg-background text-primary flex items-center justify-center">
-      <div className="text-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto mb-4"></div>
-        <p className="text-xl text-orange-300">Loading...</p>
+const AudioSummarizer = dynamic(
+  () =>
+    Promise.resolve(() => (
+      <PageErrorBoundary pageName="Dashboard">
+        <MainPageContent />
+      </PageErrorBoundary>
+    )),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="min-h-screen bg-background text-primary flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-xl text-orange-300">Loading...</p>
+        </div>
       </div>
-    </div>
-  ),
-});
+    ),
+  }
+);
 
 export default AudioSummarizer;

@@ -7,6 +7,7 @@ import { useUser } from "../../hooks/useUser";
 import Link from "next/link";
 import ClientOnly from "../../components/ClientOnly";
 import LoadingSpinner from "../../components/LoadingSpinner";
+import PageErrorBoundary from "../../components/PageErrorBoundary";
 import {
   Users,
   Plus,
@@ -47,23 +48,39 @@ function TeamContent() {
     isPremium,
     isLoading: authLoading,
     isInitialized,
+    error,
   } = useUser();
 
-  // Redirect to landing page if not authenticated
+  // Handle authentication redirect
   useEffect(() => {
-    if (isLoaded && !isSignedIn) {
+    if (isLoaded && isInitialized && !isSignedIn) {
       router.push("/landing");
+      return;
     }
-  }, [isLoaded, isSignedIn, router]);
+  }, [isLoaded, isInitialized, isSignedIn, router]);
 
   // Show loading state while checking authentication
   if (!isLoaded || !isInitialized) {
-    return <LoadingSpinner />;
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-orange-300 text-xl">Loading...</p>
+        </div>
+      </div>
+    );
   }
 
   // Don't render content if not signed in (will redirect)
-  if (!isSignedIn) {
-    return null;
+  if (!isSignedIn || error) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-orange-300">Redirecting...</p>
+        </div>
+      </div>
+    );
   }
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
   const [isInviting, setIsInviting] = useState(false);
@@ -72,8 +89,13 @@ function TeamContent() {
   const [showActions, setShowActions] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Mock data for demonstration
+  // Load team data
   useEffect(() => {
+    if (!isSignedIn || !isInitialized || !clerkUser) {
+      setIsLoading(false);
+      return;
+    }
+
     // Simulate loading team data
     setTimeout(() => {
       if (isPremium) {
@@ -108,7 +130,7 @@ function TeamContent() {
       }
       setIsLoading(false);
     }, 1000);
-  }, [isPremium, clerkUser]);
+  }, [isPremium, clerkUser, isSignedIn, isInitialized]);
 
   const handleInviteMember = () => {
     if (inviteEmail.trim()) {
@@ -161,34 +183,6 @@ function TeamContent() {
       day: "numeric",
     });
   };
-
-  // Show loading spinner while authentication is loading
-  if (authLoading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin w-12 h-12 border-2 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
-          <p className="text-orange-300">Loading...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!isSignedIn) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <AlertCircle className="w-16 h-16 text-orange-400 mx-auto mb-4" />
-          <h1 className="text-2xl font-bold text-primary mb-2">
-            Please Sign In
-          </h1>
-          <p className="text-orange-300">
-            You need to be signed in to access your team.
-          </p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-background text-primary relative overflow-hidden">
@@ -406,9 +400,17 @@ function TeamContent() {
 }
 
 // Disable SSR for this page to prevent hydration issues
-const TeamPage = dynamic(() => Promise.resolve(TeamContent), {
-  ssr: false,
-  loading: () => <LoadingSpinner />,
-});
+const TeamPage = dynamic(
+  () =>
+    Promise.resolve(() => (
+      <PageErrorBoundary pageName="Team">
+        <TeamContent />
+      </PageErrorBoundary>
+    )),
+  {
+    ssr: false,
+    loading: () => <LoadingSpinner />,
+  }
+);
 
 export default TeamPage;
