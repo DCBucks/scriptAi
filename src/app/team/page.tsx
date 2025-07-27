@@ -43,6 +43,7 @@ export default function TeamPage() {
     isLoaded,
     isPremium,
     isLoading: authLoading,
+    isInitialized,
   } = useUser();
 
   // Redirect to landing page if not authenticated
@@ -53,7 +54,7 @@ export default function TeamPage() {
   }, [isLoaded, isSignedIn, router]);
 
   // Show loading state while checking authentication
-  if (!isLoaded) {
+  if (!isLoaded || !isInitialized) {
     return (
       <div className="min-h-screen bg-background text-primary flex items-center justify-center">
         <div className="text-center">

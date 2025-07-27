@@ -641,7 +641,7 @@ const UpgradePrompt = ({
 
 export default function AudioSummarizer() {
   const router = useRouter();
-  const { clerkUser, isSignedIn, isLoaded, userId } = useUser();
+  const { clerkUser, isSignedIn, isLoaded, userId, isInitialized } = useUser();
 
   // Redirect to landing page if not authenticated
   useEffect(() => {
@@ -651,7 +651,7 @@ export default function AudioSummarizer() {
   }, [isLoaded, isSignedIn, router]);
 
   // Show loading state while checking authentication
-  if (!isLoaded) {
+  if (!isLoaded || !isInitialized) {
     return (
       <div className="min-h-screen bg-background text-primary flex items-center justify-center">
         <div className="text-center">

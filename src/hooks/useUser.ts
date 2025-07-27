@@ -15,6 +15,7 @@ export function useUser() {
   const [supabaseUser, setSupabaseUser] = useState<SupabaseUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isInitialized, setIsInitialized] = useState(false);
   const [premiumStatus, setPremiumStatus] = useState({
     isPremium: false,
     subscriptionStatus: null as string | null,
@@ -71,6 +72,7 @@ export function useUser() {
         }
       } finally {
         setIsLoading(false);
+        setIsInitialized(true);
       }
     }
 
@@ -83,6 +85,7 @@ export function useUser() {
     isLoaded,
     isSignedIn,
     isLoading,
+    isInitialized,
     error,
     // Helper to get the current user's Supabase ID
     userId: supabaseUser?.id,

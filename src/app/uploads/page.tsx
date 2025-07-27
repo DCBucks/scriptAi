@@ -226,7 +226,7 @@ interface Analytics {
 
 export default function UploadsPage() {
   const router = useRouter();
-  const { userId, isSignedIn, isLoaded } = useUser();
+  const { userId, isSignedIn, isLoaded, isInitialized } = useUser();
 
   // Redirect to landing page if not authenticated
   useEffect(() => {
@@ -236,7 +236,7 @@ export default function UploadsPage() {
   }, [isLoaded, isSignedIn, router]);
 
   // Show loading state while checking authentication
-  if (!isLoaded) {
+  if (!isLoaded || !isInitialized) {
     return (
       <div className="min-h-screen bg-background text-primary flex items-center justify-center">
         <div className="text-center">
