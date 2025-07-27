@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "../../hooks/useUser";
 import Link from "next/link";
+import ClientOnly from "../../components/ClientOnly";
+import LoadingSpinner from "../../components/LoadingSpinner";
 import {
   User,
   Mail,
@@ -30,7 +32,7 @@ interface BillingInfo {
   subscriptionStatus: "active" | "cancelled" | "expired";
 }
 
-export default function ProfilePage() {
+function ProfileContent() {
   const router = useRouter();
   const {
     clerkUser,
@@ -51,14 +53,7 @@ export default function ProfilePage() {
 
   // Show loading state while checking authentication
   if (!isLoaded || !isInitialized) {
-    return (
-      <div className="min-h-screen bg-background text-primary flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-xl text-orange-300">Loading...</p>
-        </div>
-      </div>
-    );
+    return <LoadingSpinner />;
   }
 
   // Don't render content if not signed in (will redirect)
@@ -440,5 +435,13 @@ export default function ProfilePage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ProfilePage() {
+  return (
+    <ClientOnly fallback={<LoadingSpinner />}>
+      <ProfileContent />
+    </ClientOnly>
   );
 }

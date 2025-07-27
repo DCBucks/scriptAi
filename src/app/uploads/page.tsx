@@ -7,6 +7,8 @@ import {
   getUserAudioFiles,
   getSummaryByAudioFileId,
 } from "../../lib/audio-data";
+import ClientOnly from "../../components/ClientOnly";
+import LoadingSpinner from "../../components/LoadingSpinner";
 import {
   FileAudio,
   Search,
@@ -224,7 +226,7 @@ interface Analytics {
   meetingFrequency: { date: string; count: number }[];
 }
 
-export default function UploadsPage() {
+function UploadsContent() {
   const router = useRouter();
   const { userId, isSignedIn, isLoaded, isInitialized } = useUser();
 
@@ -237,14 +239,7 @@ export default function UploadsPage() {
 
   // Show loading state while checking authentication
   if (!isLoaded || !isInitialized) {
-    return (
-      <div className="min-h-screen bg-background text-primary flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-xl text-orange-300">Loading...</p>
-        </div>
-      </div>
-    );
+    return <LoadingSpinner />;
   }
 
   // Don't render content if not signed in (will redirect)
@@ -830,5 +825,13 @@ export default function UploadsPage() {
         setIsNavOpen={setIsNavOpen}
       />
     </div>
+  );
+}
+
+export default function UploadsPage() {
+  return (
+    <ClientOnly fallback={<LoadingSpinner />}>
+      <UploadsContent />
+    </ClientOnly>
   );
 }

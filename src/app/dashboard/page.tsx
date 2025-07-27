@@ -14,6 +14,8 @@ import {
   incrementTranscriptionCount,
   checkTranscriptionLimit,
 } from "../../lib/subscription";
+import ClientOnly from "../../components/ClientOnly";
+import LoadingSpinner from "../../components/LoadingSpinner";
 import {
   Upload,
   FileAudio,
@@ -639,7 +641,7 @@ const UpgradePrompt = ({
   </div>
 );
 
-export default function AudioSummarizer() {
+function DashboardContent() {
   const router = useRouter();
   const { clerkUser, isSignedIn, isLoaded, userId, isInitialized } = useUser();
 
@@ -652,14 +654,7 @@ export default function AudioSummarizer() {
 
   // Show loading state while checking authentication
   if (!isLoaded || !isInitialized) {
-    return (
-      <div className="min-h-screen bg-background text-primary flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-xl text-orange-300">Loading...</p>
-        </div>
-      </div>
-    );
+    return <LoadingSpinner />;
   }
 
   // Don't render content if not signed in (will redirect)
@@ -1193,5 +1188,13 @@ export default function AudioSummarizer() {
         setIsNavOpen={setIsNavOpen}
       />
     </div>
+  );
+}
+
+export default function AudioSummarizer() {
+  return (
+    <ClientOnly fallback={<LoadingSpinner />}>
+      <DashboardContent />
+    </ClientOnly>
   );
 }
