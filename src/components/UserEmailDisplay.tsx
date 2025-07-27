@@ -1,17 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import { useUser } from "../hooks/useUser";
+import { useClientUser } from "../hooks/useClientUser";
 import { useClerk } from "@clerk/nextjs";
 import { ChevronDown, LogOut, User, Users } from "lucide-react";
 import Link from "next/link";
+import ClientOnly from "./ClientOnly";
 
-export default function UserEmailDisplay() {
-  const { clerkUser, isSignedIn } = useUser();
+function UserEmailDisplayContent() {
+  const { clerkUser, isSignedIn, isClient } = useClientUser();
   const { signOut } = useClerk();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  if (!isSignedIn || !clerkUser) {
+  if (!isClient || !isSignedIn || !clerkUser) {
     return null;
   }
 
@@ -99,5 +100,13 @@ export default function UserEmailDisplay() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function UserEmailDisplay() {
+  return (
+    <ClientOnly>
+      <UserEmailDisplayContent />
+    </ClientOnly>
   );
 }

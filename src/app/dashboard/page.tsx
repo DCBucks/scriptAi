@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "../../hooks/useUser";
@@ -1191,10 +1192,10 @@ function DashboardContent() {
   );
 }
 
-export default function AudioSummarizer() {
-  return (
-    <ClientOnly fallback={<LoadingSpinner />}>
-      <DashboardContent />
-    </ClientOnly>
-  );
-}
+// Disable SSR for this page to prevent hydration issues
+const AudioSummarizer = dynamic(() => Promise.resolve(DashboardContent), {
+  ssr: false,
+  loading: () => <LoadingSpinner />,
+});
+
+export default AudioSummarizer;
