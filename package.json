@@ -14,6 +14,7 @@
     "@clerk/nextjs": "^6.27.1",
     "@stripe/stripe-js": "^7.6.1",
     "@supabase/supabase-js": "^2.52.1",
+    "dotenv": "^17.2.1",
     "lucide-react": "^0.526.0",
     "next": "15.4.2",
     "openai": "^5.10.2",
