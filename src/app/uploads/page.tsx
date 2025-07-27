@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "../../hooks/useUser";
@@ -828,10 +829,10 @@ function UploadsContent() {
   );
 }
 
-export default function UploadsPage() {
-  return (
-    <ClientOnly fallback={<LoadingSpinner />}>
-      <UploadsContent />
-    </ClientOnly>
-  );
-}
+// Disable SSR for this page to prevent hydration issues
+const UploadsPage = dynamic(() => Promise.resolve(UploadsContent), {
+  ssr: false,
+  loading: () => <LoadingSpinner />,
+});
+
+export default UploadsPage;

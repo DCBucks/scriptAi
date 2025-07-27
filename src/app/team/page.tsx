@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "../../hooks/useUser";
@@ -404,10 +405,10 @@ function TeamContent() {
   );
 }
 
-export default function TeamPage() {
-  return (
-    <ClientOnly fallback={<LoadingSpinner />}>
-      <TeamContent />
-    </ClientOnly>
-  );
-}
+// Disable SSR for this page to prevent hydration issues
+const TeamPage = dynamic(() => Promise.resolve(TeamContent), {
+  ssr: false,
+  loading: () => <LoadingSpinner />,
+});
+
+export default TeamPage;

@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "../../hooks/useUser";
@@ -438,10 +439,10 @@ function ProfileContent() {
   );
 }
 
-export default function ProfilePage() {
-  return (
-    <ClientOnly fallback={<LoadingSpinner />}>
-      <ProfileContent />
-    </ClientOnly>
-  );
-}
+// Disable SSR for this page to prevent hydration issues
+const ProfilePage = dynamic(() => Promise.resolve(ProfileContent), {
+  ssr: false,
+  loading: () => <LoadingSpinner />,
+});
+
+export default ProfilePage;
