@@ -653,16 +653,16 @@ function MainPageContent() {
     error: authError,
   } = useUser();
 
-  // Handle authentication redirect
+  // Handle authentication redirect - only redirect if definitely not signed in
   useEffect(() => {
-    if (isLoaded && isInitialized && !isSignedIn) {
+    if (isLoaded && !isSignedIn) {
       router.push("/landing");
       return;
     }
-  }, [isLoaded, isInitialized, isSignedIn, router]);
+  }, [isLoaded, isSignedIn, router]);
 
-  // Show loading state while checking authentication
-  if (!isLoaded || !isInitialized) {
+  // Show loading state while checking authentication - be less strict
+  if (!isLoaded) {
     return (
       <div className="min-h-screen bg-background text-primary flex items-center justify-center">
         <div className="text-center">
@@ -674,7 +674,7 @@ function MainPageContent() {
   }
 
   // Don't render content if not signed in (will redirect)
-  if (!isSignedIn || authError) {
+  if (!isSignedIn) {
     return (
       <div className="min-h-screen bg-background text-primary flex items-center justify-center">
         <div className="text-center">

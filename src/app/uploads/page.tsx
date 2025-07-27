@@ -232,16 +232,16 @@ function UploadsContent() {
   const router = useRouter();
   const { userId, isSignedIn, isLoaded, isInitialized, error } = useUser();
 
-  // Handle authentication redirect
+  // Handle authentication redirect - only redirect if definitely not signed in
   useEffect(() => {
-    if (isLoaded && isInitialized && !isSignedIn) {
+    if (isLoaded && !isSignedIn) {
       router.push("/landing");
       return;
     }
-  }, [isLoaded, isInitialized, isSignedIn, router]);
+  }, [isLoaded, isSignedIn, router]);
 
-  // Show loading state while checking authentication
-  if (!isLoaded || !isInitialized) {
+  // Show loading state while checking authentication - be less strict
+  if (!isLoaded) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
@@ -253,7 +253,7 @@ function UploadsContent() {
   }
 
   // Don't render content if not signed in (will redirect)
-  if (!isSignedIn || error) {
+  if (!isSignedIn) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
@@ -294,7 +294,7 @@ function UploadsContent() {
   // Load user audio files from Supabase
   useEffect(() => {
     async function loadUserFiles() {
-      if (!userId || !isSignedIn || !isInitialized) {
+      if (!userId || !isSignedIn) {
         setIsLoading(false);
         return;
       }
@@ -362,7 +362,7 @@ function UploadsContent() {
     }
 
     loadUserFiles();
-  }, [userId, isSignedIn, isInitialized]);
+  }, [userId, isSignedIn]);
 
   // Regenerate tasks whenever uploadedFiles changes
   useEffect(() => {
