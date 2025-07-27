@@ -2,18 +2,18 @@
 
 import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { useUser } from "../hooks/useUser";
+import { useUser } from "../../hooks/useUser";
 import {
   saveAudioFile,
   saveSummary,
   saveChatMessage,
   updateAudioFileWithTranscript,
-} from "../lib/audio-data";
+} from "../../lib/audio-data";
 import {
   checkUserPremiumStatus,
   incrementTranscriptionCount,
   checkTranscriptionLimit,
-} from "../lib/subscription";
+} from "../../lib/subscription";
 import {
   Upload,
   FileAudio,
