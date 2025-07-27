@@ -41,19 +41,6 @@ import {
   UserPlus,
   UserMinus,
   UserCog,
-  UserEdit,
-  UserSearch,
-  UserVoice,
-  UserClock,
-  UserCheck2,
-  UserX2,
-  UserPlus2,
-  UserMinus2,
-  UserCog2,
-  UserEdit2,
-  UserSearch2,
-  UserVoice2,
-  UserClock2,
 } from "lucide-react";
 
 interface Task {

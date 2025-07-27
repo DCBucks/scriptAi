@@ -149,11 +149,10 @@ export default function FilesTab({
   };
 
   const handleSelectFile = (fileId: string) => {
-    setSelectedFiles((prev) =>
-      prev.includes(fileId)
-        ? prev.filter((id) => id !== fileId)
-        : [...prev, fileId]
-    );
+    const newSelectedFiles = selectedFiles.includes(fileId)
+      ? selectedFiles.filter((id) => id !== fileId)
+      : [...selectedFiles, fileId];
+    setSelectedFiles(newSelectedFiles);
   };
 
   const addBulletPoint = () => {
@@ -468,8 +467,8 @@ export default function FilesTab({
             No files found
           </h3>
           <p className="text-orange-300">
-            Try adjusting your search or filters to find what you&apos;re looking
-            for.
+            Try adjusting your search or filters to find what you&apos;re
+            looking for.
           </p>
         </div>
       )}

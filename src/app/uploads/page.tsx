@@ -57,19 +57,6 @@ import {
   UserPlus,
   UserMinus,
   UserCog,
-  UserEdit,
-  UserSearch,
-  UserVoice,
-  UserClock,
-  UserCheck2,
-  UserX2,
-  UserPlus2,
-  UserMinus2,
-  UserCog2,
-  UserEdit2,
-  UserSearch2,
-  UserVoice2,
-  UserClock2,
   Menu,
   FileUp,
   Crown,
@@ -570,6 +557,7 @@ export default function UploadsPage() {
     URL.revokeObjectURL(url);
   };
 
+  // TODO: Connect this to UI when analytics export is implemented
   const exportAll = () => {
     const data = {
       files: uploadedFiles,
@@ -774,8 +762,6 @@ export default function UploadsPage() {
             currentPlayingAudio={currentPlayingAudio}
             audioRefs={audioRefs}
             setAudioRefs={setAudioRefs}
-            showActions={showActions}
-            setShowActions={setShowActions}
             onPlayAudio={handlePlayAudio}
             onToggleFavorite={toggleFavorite}
             onToggleArchive={toggleArchive}
@@ -785,18 +771,6 @@ export default function UploadsPage() {
             onSaveEdits={saveEdits}
             onCancelEditing={cancelEditing}
             onExportFile={exportFile}
-            addBulletPoint={addBulletPoint}
-            removeBulletPoint={removeBulletPoint}
-            updateBulletPoint={updateBulletPoint}
-            addKeyTopic={addKeyTopic}
-            removeKeyTopic={removeKeyTopic}
-            updateKeyTopic={updateKeyTopic}
-            addActionItem={addActionItem}
-            removeActionItem={removeActionItem}
-            updateActionItem={updateActionItem}
-            formatDate={formatDate}
-            getStatusIcon={getStatusIcon}
-            getMeetingTypeIcon={getMeetingTypeIcon}
           />
         )}
 

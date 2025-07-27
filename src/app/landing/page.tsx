@@ -129,7 +129,7 @@ export default function LandingPage() {
               </a>
 
               <SignedOut>
-                <SignUpButton redirectUrl="/">
+                <SignUpButton fallbackRedirectUrl="/">
                   <button className="bg-gradient-to-r from-primary to-orange-500 hover:from-primary-hover hover:to-orange-600 text-black font-bold py-2 px-6 rounded-lg transition-all duration-300 shadow-lg shadow-primary/25 hover:shadow-primary/40 transform hover:scale-105">
                     Get Started
                   </button>
@@ -172,7 +172,7 @@ export default function LandingPage() {
             </p>
             <div className="flex items-center justify-center mb-16">
               <SignedOut>
-                <SignUpButton redirectUrl="/">
+                <SignUpButton fallbackRedirectUrl="/">
                   <button className="bg-gradient-to-r from-primary to-orange-500 hover:from-primary-hover hover:to-orange-600 text-black font-bold py-4 px-8 rounded-xl transition-all duration-300 shadow-lg shadow-primary/25 hover:shadow-primary/40 transform hover:scale-105 text-lg">
                     Try for Free
                     <ArrowRight className="w-5 h-5 inline ml-2" />
@@ -240,11 +240,8 @@ export default function LandingPage() {
               <div className="aspect-video rounded-xl overflow-hidden">
                 <iframe
                   src="YOUR_LOOM_EMBED_URL_HERE"
-                  frameBorder="0"
-                  webkitallowfullscreen="true"
-                  mozallowfullscreen="true"
+                  className="w-full h-full border-0"
                   allowFullScreen
-                  className="w-full h-full"
                   title="ScriptAi Demo Video"
                 ></iframe>
               </div>
@@ -406,7 +403,7 @@ export default function LandingPage() {
                 </li>
               </ul>
               <SignedOut>
-                <SignUpButton redirectUrl="/">
+                <SignUpButton fallbackRedirectUrl="/">
                   <button className="w-full bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800 text-white font-bold py-3 px-6 rounded-xl transition-all duration-300 shadow-lg">
                     Get Started Free
                   </button>
@@ -463,7 +460,7 @@ export default function LandingPage() {
                 </li>
               </ul>
               <SignedOut>
-                <SignUpButton redirectUrl="/">
+                <SignUpButton fallbackRedirectUrl="/">
                   <button className="w-full bg-gradient-to-r from-primary to-orange-500 hover:from-primary-hover hover:to-orange-600 text-black font-bold py-3 px-6 rounded-xl transition-all duration-300 shadow-lg shadow-primary/25 hover:shadow-primary/40">
                     Upgrade to Premium
                   </button>

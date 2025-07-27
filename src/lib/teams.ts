@@ -228,7 +228,11 @@ export async function checkTeamPermission(
     if (error && error.code !== "PGRST116") throw error;
     if (!data) return false;
 
-    const roleHierarchy = { owner: 3, admin: 2, member: 1 };
+    const roleHierarchy: { [key: string]: number } = {
+      owner: 3,
+      admin: 2,
+      member: 1,
+    };
     return roleHierarchy[data.role] >= roleHierarchy[requiredRole];
   } catch (error) {
     console.error("Error checking team permission:", error);

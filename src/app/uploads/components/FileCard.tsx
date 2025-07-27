@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   FileAudio,
   Play,
@@ -98,8 +98,8 @@ interface FileCardProps {
   removeActionItem: (index: number) => void;
   updateActionItem: (index: number, value: string) => void;
   formatDate: (date: Date) => string;
-  getStatusIcon: (status: string) => JSX.Element;
-  getMeetingTypeIcon: (type: string) => JSX.Element;
+  getStatusIcon: (status: string) => React.JSX.Element;
+  getMeetingTypeIcon: (type: string) => React.JSX.Element;
 }
 
 export default function FileCard({
