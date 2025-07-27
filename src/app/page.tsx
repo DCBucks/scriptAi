@@ -1084,38 +1084,6 @@ function MainPageContent() {
     ]
   );
 
-  const summaryDisplay = useMemo(
-    () =>
-      summary &&
-      processingStatus.stage === "completed" && (
-        <SummaryDisplay summary={summary} onExport={exportSummary} />
-      ),
-    [summary, processingStatus.stage, exportSummary]
-  );
-
-  const chatInterface = useMemo(
-    () =>
-      summary &&
-      processingStatus.stage === "completed" && (
-        <ChatInterface
-          messages={chatMessages}
-          currentQuestion={currentQuestion}
-          onQuestionChange={setCurrentQuestion}
-          onSendQuestion={askFollowUpQuestion}
-          isAskingQuestion={isAskingQuestion}
-          chatEndRef={chatEndRef}
-        />
-      ),
-    [
-      summary,
-      processingStatus.stage,
-      chatMessages,
-      currentQuestion,
-      askFollowUpQuestion,
-      isAskingQuestion,
-    ]
-  );
-
   return (
     <div className="min-h-screen bg-background text-primary relative overflow-hidden">
       <UserEmailDisplay />
@@ -1204,10 +1172,21 @@ function MainPageContent() {
         )}
 
         {/* Results Section */}
-        {summaryDisplay}
+        {summary && processingStatus.stage === "completed" && (
+          <SummaryDisplay summary={summary} onExport={exportSummary} />
+        )}
 
         {/* Chat Interface */}
-        {chatInterface}
+        {summary && processingStatus.stage === "completed" && (
+          <ChatInterface
+            messages={chatMessages}
+            currentQuestion={currentQuestion}
+            onQuestionChange={setCurrentQuestion}
+            onSendQuestion={askFollowUpQuestion}
+            isAskingQuestion={isAskingQuestion}
+            chatEndRef={chatEndRef}
+          />
+        )}
       </div>
 
       {/* Navigation Drawer */}
