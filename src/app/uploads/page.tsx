@@ -69,6 +69,7 @@ import {
 import FilesTab from "./components/FilesTab";
 import TasksTab from "./components/TasksTab";
 import PageErrorBoundary from "../../components/PageErrorBoundary";
+import SupabaseFallback from "../../components/SupabaseFallback";
 
 // Navigation Component
 const NavigationDrawer = ({
@@ -290,6 +291,7 @@ function UploadsContent() {
   }>({});
   const [showActions, setShowActions] = useState<string | null>(null);
   const [isNavOpen, setIsNavOpen] = useState(false);
+  const [hasSupabaseError, setHasSupabaseError] = useState(false);
 
   // Load user audio files from Supabase
   useEffect(() => {
@@ -301,7 +303,21 @@ function UploadsContent() {
 
       try {
         setIsLoading(true);
-        const audioFiles = await getUserAudioFiles(userId);
+        // Try to load audio files, but don't crash if Supabase is down
+        let audioFiles = [];
+        try {
+          audioFiles = await getUserAudioFiles(userId);
+        } catch (supabaseError) {
+          console.warn(
+            "Could not load audio files from Supabase:",
+            supabaseError
+          );
+          // App continues to work - user can still upload new files
+          setUploadedFiles([]);
+          setHasSupabaseError(true);
+          setIsLoading(false);
+          return;
+        }
 
         // Transform Supabase data to match the UploadedFile interface
         const transformedFiles: UploadedFile[] = await Promise.all(
@@ -773,6 +789,17 @@ function UploadsContent() {
             </button>
           </div>
         </div>
+
+        {/* Supabase Error Fallback */}
+        {hasSupabaseError && (
+          <SupabaseFallback
+            error="Could not connect to database"
+            onRetry={() => {
+              setHasSupabaseError(false);
+              window.location.reload();
+            }}
+          />
+        )}
 
         {/* Content based on active tab */}
         {activeTab === "files" && (

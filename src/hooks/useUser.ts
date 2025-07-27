@@ -32,20 +32,35 @@ export function useUser() {
 
       try {
         if (isSignedIn && clerkUser) {
-          // Prepare user data for Supabase
-          const userData: UserData = {
-            clerk_user_id: clerkUser.id,
-            email: clerkUser.primaryEmailAddress?.emailAddress || "",
-            name: clerkUser.fullName || clerkUser.firstName || null,
-          };
+          // Always set basic user data from Clerk - don't wait for Supabase
+          setIsInitialized(true);
+          
+          // Try Supabase sync in background - don't block the UI
+          try {
+            const userData: UserData = {
+              clerk_user_id: clerkUser.id,
+              email: clerkUser.primaryEmailAddress?.emailAddress || "",
+              name: clerkUser.fullName || clerkUser.firstName || null,
+            };
 
-          // Sync user with Supabase
-          const syncedUser = await syncUserWithSupabase(userData);
-          setSupabaseUser(syncedUser);
+            // Sync user with Supabase (non-blocking)
+            const syncedUser = await syncUserWithSupabase(userData);
+            setSupabaseUser(syncedUser);
 
-          // Check premium status
-          const premium = await checkUserPremiumStatus(clerkUser.id);
-          setPremiumStatus(premium);
+            // Check premium status (non-blocking)
+            const premium = await checkUserPremiumStatus(clerkUser.id);
+            setPremiumStatus(premium);
+          } catch (supabaseErr) {
+            console.warn("Supabase sync failed (app will continue without it):", supabaseErr);
+            // App continues to work without Supabase
+            setSupabaseUser(null);
+            setPremiumStatus({
+              isPremium: false,
+              subscriptionStatus: null,
+              subscriptionEndsAt: null,
+              hasActiveSubscription: false,
+            });
+          }
         } else {
           // User is not signed in
           setSupabaseUser(null);
@@ -55,38 +70,17 @@ export function useUser() {
             subscriptionEndsAt: null,
             hasActiveSubscription: false,
           });
+          setIsInitialized(true);
         }
       } catch (err) {
-        console.error("Error syncing user:", err);
-
-        // Don't show auth errors to user unless critical
-        const errorMessage =
-          err instanceof Error ? err.message : "Unknown error occurred";
-        if (
-          !errorMessage.includes("network") &&
-          !errorMessage.includes("timeout")
-        ) {
-          setError(errorMessage);
+        console.error("Critical authentication error:", err);
+        // Only set error for truly critical failures that prevent basic auth
+        if (err instanceof Error && err.message.includes('Clerk')) {
+          setError(err.message);
         }
-
-        // Try to fetch existing user if sync fails
-        if (clerkUser?.id) {
-          try {
-            const existingUser = await getUserFromSupabase(clerkUser.id);
-            setSupabaseUser(existingUser);
-            setError(null); // Clear error if we successfully fetched existing user
-          } catch (fetchErr) {
-            console.error("Error fetching existing user:", fetchErr);
-            // Only set error for critical failures
-            const errorString = fetchErr instanceof Error ? fetchErr.message : String(fetchErr);
-            if (!errorString.includes("network")) {
-              setError("Authentication service temporarily unavailable");
-            }
-          }
-        }
+        setIsInitialized(true); // Still allow app to load
       } finally {
         setIsLoading(false);
-        setIsInitialized(true);
       }
     }
 
