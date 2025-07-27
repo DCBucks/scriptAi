@@ -25,6 +25,11 @@ export function useUser() {
 
   useEffect(() => {
     async function handleUserSync() {
+      console.log("🔍 useUser hook - handleUserSync called");
+      console.log("🔍 isLoaded:", isLoaded);
+      console.log("🔍 isSignedIn:", isSignedIn);
+      console.log("🔍 clerkUser exists:", !!clerkUser);
+
       if (!isLoaded) return;
 
       setIsLoading(true);
@@ -32,9 +37,10 @@ export function useUser() {
 
       try {
         if (isSignedIn && clerkUser) {
+          console.log("🔍 User is signed in, attempting Supabase sync");
           // Always set basic user data from Clerk - don't wait for Supabase
           setIsInitialized(true);
-          
+
           // Try Supabase sync in background - don't block the UI
           try {
             const userData: UserData = {
@@ -51,7 +57,10 @@ export function useUser() {
             const premium = await checkUserPremiumStatus(clerkUser.id);
             setPremiumStatus(premium);
           } catch (supabaseErr) {
-            console.warn("Supabase sync failed (app will continue without it):", supabaseErr);
+            console.warn(
+              "🔍 Supabase sync failed (app will continue without it):",
+              supabaseErr
+            );
             // App continues to work without Supabase
             setSupabaseUser(null);
             setPremiumStatus({
@@ -75,7 +84,7 @@ export function useUser() {
       } catch (err) {
         console.error("Critical authentication error:", err);
         // Only set error for truly critical failures that prevent basic auth
-        if (err instanceof Error && err.message.includes('Clerk')) {
+        if (err instanceof Error && err.message.includes("Clerk")) {
           setError(err.message);
         }
         setIsInitialized(true); // Still allow app to load

@@ -4,6 +4,13 @@ import { createClient } from "@supabase/supabase-js";
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
+// Debug logging
+console.log("🔍 Supabase Environment Check:");
+console.log("URL exists:", !!supabaseUrl);
+console.log("Key exists:", !!supabaseAnonKey);
+console.log("URL length:", supabaseUrl?.length || 0);
+console.log("Key length:", supabaseAnonKey?.length || 0);
+
 // Create Supabase client only if environment variables are present
 export const supabase =
   supabaseUrl && supabaseAnonKey
@@ -12,7 +19,9 @@ export const supabase =
 
 // Helper function to check if Supabase is available
 export const isSupabaseAvailable = () => {
-  return supabase !== null;
+  const available = supabase !== null;
+  console.log("🔍 Supabase available:", available);
+  return available;
 };
 
 // Database types (we'll update these after creating our schema)
