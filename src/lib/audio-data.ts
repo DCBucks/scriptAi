@@ -1,4 +1,4 @@
-import { supabase } from "./supabase";
+import { supabase, isSupabaseAvailable } from "./supabase";
 
 export interface AudioFileData {
   id?: string;
@@ -28,6 +28,10 @@ export interface ChatMessageData {
 // Audio File Management
 export async function saveAudioFile(audioData: AudioFileData) {
   try {
+    if (!isSupabaseAvailable() || !supabase) {
+      throw new Error("Supabase configuration missing");
+    }
+
     const { data, error } = await supabase
       .from("audio_files")
       .insert(audioData)
@@ -47,6 +51,10 @@ export async function updateAudioFileStatus(
   status: "pending" | "processing" | "completed" | "error"
 ) {
   try {
+    if (!isSupabaseAvailable() || !supabase) {
+      throw new Error("Supabase configuration missing");
+    }
+
     const { data, error } = await supabase
       .from("audio_files")
       .update({
@@ -71,6 +79,10 @@ export async function updateAudioFileWithTranscript(
   status: "pending" | "processing" | "completed" | "error" = "completed"
 ) {
   try {
+    if (!isSupabaseAvailable() || !supabase) {
+      throw new Error("Supabase configuration missing");
+    }
+
     const { data, error } = await supabase
       .from("audio_files")
       .update({
@@ -92,6 +104,10 @@ export async function updateAudioFileWithTranscript(
 
 export async function getUserAudioFiles(userId: string) {
   try {
+    if (!isSupabaseAvailable() || !supabase) {
+      throw new Error("Supabase configuration missing");
+    }
+
     const { data, error } = await supabase
       .from("audio_files")
       .select("*")
@@ -109,6 +125,10 @@ export async function getUserAudioFiles(userId: string) {
 // Summary Management
 export async function saveSummary(summaryData: SummaryData) {
   try {
+    if (!isSupabaseAvailable() || !supabase) {
+      throw new Error("Supabase configuration missing");
+    }
+
     const { data, error } = await supabase
       .from("summaries")
       .insert(summaryData)
@@ -125,6 +145,10 @@ export async function saveSummary(summaryData: SummaryData) {
 
 export async function getSummaryByAudioFileId(audioFileId: string) {
   try {
+    if (!isSupabaseAvailable() || !supabase) {
+      throw new Error("Supabase configuration missing");
+    }
+
     const { data, error } = await supabase
       .from("summaries")
       .select("*")
@@ -142,6 +166,10 @@ export async function getSummaryByAudioFileId(audioFileId: string) {
 // Chat Message Management
 export async function saveChatMessage(messageData: ChatMessageData) {
   try {
+    if (!isSupabaseAvailable() || !supabase) {
+      throw new Error("Supabase configuration missing");
+    }
+
     const { data, error } = await supabase
       .from("chat_messages")
       .insert(messageData)
@@ -158,6 +186,10 @@ export async function saveChatMessage(messageData: ChatMessageData) {
 
 export async function getChatMessages(audioFileId: string) {
   try {
+    if (!isSupabaseAvailable() || !supabase) {
+      throw new Error("Supabase configuration missing");
+    }
+    
     const { data, error } = await supabase
       .from("chat_messages")
       .select("*")
@@ -175,6 +207,10 @@ export async function getChatMessages(audioFileId: string) {
 // Combined data fetching
 export async function getAudioFileWithSummaryAndChat(audioFileId: string) {
   try {
+    if (!isSupabaseAvailable() || !supabase) {
+      throw new Error("Supabase configuration missing");
+    }
+    
     const [audioFile, summary, chatMessages] = await Promise.all([
       supabase.from("audio_files").select("*").eq("id", audioFileId).single(),
       supabase

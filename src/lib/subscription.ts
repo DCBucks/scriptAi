@@ -1,4 +1,4 @@
-import { supabase } from "./supabase";
+import { supabase, isSupabaseAvailable } from "./supabase";
 
 // Subscription Management
 export async function updateUserSubscription(
@@ -11,6 +11,10 @@ export async function updateUserSubscription(
   }
 ) {
   try {
+    if (!isSupabaseAvailable() || !supabase) {
+      throw new Error("Supabase configuration missing");
+    }
+
     const { data, error } = await supabase
       .from("users")
       .update({
@@ -31,6 +35,10 @@ export async function updateUserSubscription(
 
 export async function checkUserPremiumStatus(clerkUserId: string) {
   try {
+    if (!isSupabaseAvailable() || !supabase) {
+      throw new Error("Supabase configuration missing");
+    }
+
     const { data, error } = await supabase
       .from("users")
       .select(
@@ -68,6 +76,10 @@ export async function checkUserPremiumStatus(clerkUserId: string) {
 // Transcription Count Management
 export async function incrementTranscriptionCount(userId: string) {
   try {
+    if (!isSupabaseAvailable() || !supabase) {
+      throw new Error("Supabase configuration missing");
+    }
+
     // First get the current count
     const { data: currentUser, error: fetchError } = await supabase
       .from("users")
@@ -98,6 +110,10 @@ export async function incrementTranscriptionCount(userId: string) {
 
 export async function checkTranscriptionLimit(clerkUserId: string) {
   try {
+    if (!isSupabaseAvailable() || !supabase) {
+      throw new Error("Supabase configuration missing");
+    }
+
     const { data, error } = await supabase
       .from("users")
       .select(

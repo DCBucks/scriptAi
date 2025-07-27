@@ -1,4 +1,4 @@
-import { supabase } from "./supabase";
+import { supabase, isSupabaseAvailable } from "./supabase";
 
 export interface UserData {
   clerk_user_id: string;
@@ -8,11 +8,8 @@ export interface UserData {
 
 export async function syncUserWithSupabase(userData: UserData) {
   try {
-    // Check if Supabase environment variables are available
-    if (
-      !process.env.NEXT_PUBLIC_SUPABASE_URL ||
-      !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-    ) {
+    // Check if Supabase is available
+    if (!isSupabaseAvailable() || !supabase) {
       throw new Error("Supabase configuration missing");
     }
 
@@ -94,11 +91,8 @@ export async function syncUserWithSupabase(userData: UserData) {
 
 export async function getUserFromSupabase(clerkUserId: string) {
   try {
-    // Check if Supabase environment variables are available
-    if (
-      !process.env.NEXT_PUBLIC_SUPABASE_URL ||
-      !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-    ) {
+    // Check if Supabase is available
+    if (!isSupabaseAvailable() || !supabase) {
       throw new Error("Supabase configuration missing");
     }
 

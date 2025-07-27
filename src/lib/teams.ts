@@ -1,4 +1,4 @@
-import { supabase } from "./supabase";
+import { supabase, isSupabaseAvailable } from "./supabase";
 
 export interface TeamData {
   name: string;
@@ -15,6 +15,10 @@ export interface TeamMemberData {
 // Team Management
 export async function createTeam(teamData: TeamData) {
   try {
+    if (!isSupabaseAvailable() || !supabase) {
+      throw new Error("Supabase configuration missing");
+    }
+
     const { data, error } = await supabase
       .from("teams")
       .insert(teamData)
@@ -31,6 +35,10 @@ export async function createTeam(teamData: TeamData) {
 
 export async function getUserTeams(userId: string) {
   try {
+    if (!isSupabaseAvailable() || !supabase) {
+      throw new Error("Supabase configuration missing");
+    }
+
     const { data, error } = await supabase
       .from("teams")
       .select(
@@ -57,6 +65,10 @@ export async function getUserTeams(userId: string) {
 
 export async function getTeamDetails(teamId: string) {
   try {
+    if (!isSupabaseAvailable() || !supabase) {
+      throw new Error("Supabase configuration missing");
+    }
+
     const { data, error } = await supabase
       .from("teams")
       .select(
@@ -89,6 +101,10 @@ export async function getTeamDetails(teamId: string) {
 
 export async function updateTeam(teamId: string, updates: Partial<TeamData>) {
   try {
+    if (!isSupabaseAvailable() || !supabase) {
+      throw new Error("Supabase configuration missing");
+    }
+
     const { data, error } = await supabase
       .from("teams")
       .update({
@@ -109,6 +125,10 @@ export async function updateTeam(teamId: string, updates: Partial<TeamData>) {
 
 export async function deleteTeam(teamId: string) {
   try {
+    if (!isSupabaseAvailable() || !supabase) {
+      throw new Error("Supabase configuration missing");
+    }
+
     const { error } = await supabase.from("teams").delete().eq("id", teamId);
 
     if (error) throw error;
@@ -122,6 +142,10 @@ export async function deleteTeam(teamId: string) {
 // Team Member Management
 export async function inviteTeamMember(memberData: TeamMemberData) {
   try {
+    if (!isSupabaseAvailable() || !supabase) {
+      throw new Error("Supabase configuration missing");
+    }
+
     const { data, error } = await supabase
       .from("team_members")
       .insert({
@@ -141,6 +165,10 @@ export async function inviteTeamMember(memberData: TeamMemberData) {
 
 export async function acceptTeamInvitation(teamMemberId: string) {
   try {
+    if (!isSupabaseAvailable() || !supabase) {
+      throw new Error("Supabase configuration missing");
+    }
+
     const { data, error } = await supabase
       .from("team_members")
       .update({
@@ -164,6 +192,10 @@ export async function updateTeamMemberRole(
   newRole: "admin" | "member"
 ) {
   try {
+    if (!isSupabaseAvailable() || !supabase) {
+      throw new Error("Supabase configuration missing");
+    }
+
     const { data, error } = await supabase
       .from("team_members")
       .update({ role: newRole })
@@ -181,6 +213,10 @@ export async function updateTeamMemberRole(
 
 export async function removeTeamMember(teamMemberId: string) {
   try {
+    if (!isSupabaseAvailable() || !supabase) {
+      throw new Error("Supabase configuration missing");
+    }
+
     const { error } = await supabase
       .from("team_members")
       .delete()
@@ -196,6 +232,10 @@ export async function removeTeamMember(teamMemberId: string) {
 
 export async function leaveTeam(teamId: string, userId: string) {
   try {
+    if (!isSupabaseAvailable() || !supabase) {
+      throw new Error("Supabase configuration missing");
+    }
+
     const { error } = await supabase
       .from("team_members")
       .delete()
@@ -217,6 +257,10 @@ export async function checkTeamPermission(
   requiredRole: "owner" | "admin" | "member" = "member"
 ) {
   try {
+    if (!isSupabaseAvailable() || !supabase) {
+      throw new Error("Supabase configuration missing");
+    }
+
     const { data, error } = await supabase
       .from("team_members")
       .select("role")
@@ -242,6 +286,10 @@ export async function checkTeamPermission(
 
 export async function getPendingInvitations(userId: string) {
   try {
+    if (!isSupabaseAvailable() || !supabase) {
+      throw new Error("Supabase configuration missing");
+    }
+
     const { data, error } = await supabase
       .from("team_members")
       .select(
