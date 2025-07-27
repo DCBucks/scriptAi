@@ -78,7 +78,8 @@ export function useUser() {
           } catch (fetchErr) {
             console.error("Error fetching existing user:", fetchErr);
             // Only set error for critical failures
-            if (!fetchErr.toString().includes("network")) {
+            const errorString = fetchErr instanceof Error ? fetchErr.message : String(fetchErr);
+            if (!errorString.includes("network")) {
               setError("Authentication service temporarily unavailable");
             }
           }
