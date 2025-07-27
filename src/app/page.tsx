@@ -301,19 +301,15 @@ const ChatInterface = ({
   onQuestionChange,
   onSendQuestion,
   isAskingQuestion,
+  chatEndRef,
 }: {
   messages: ChatMessage[];
   currentQuestion: string;
   onQuestionChange: (question: string) => void;
   onSendQuestion: () => void;
   isAskingQuestion: boolean;
+  chatEndRef: React.RefObject<HTMLDivElement>;
 }) => {
-  const chatEndRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
-
   return (
     <div className="bg-gradient-to-br from-surface/80 to-surface/40 backdrop-blur-xl border border-border/50 rounded-2xl p-8 shadow-2xl shadow-primary/5">
       <div className="flex items-center mb-6">
@@ -672,6 +668,12 @@ function MainPageContent() {
   const [isNavOpen, setIsNavOpen] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const chatEndRef = useRef<HTMLDivElement>(null);
+
+  // Chat auto-scroll effect
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [chatMessages]);
 
   // Handle authentication redirect - only redirect if definitely not signed in
   useEffect(() => {
@@ -1101,6 +1103,7 @@ function MainPageContent() {
           onQuestionChange={setCurrentQuestion}
           onSendQuestion={askFollowUpQuestion}
           isAskingQuestion={isAskingQuestion}
+          chatEndRef={chatEndRef}
         />
       ),
     [
