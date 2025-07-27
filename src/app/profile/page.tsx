@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useUser } from "../../hooks/useUser";
 import Link from "next/link";
 import {
@@ -30,13 +31,39 @@ interface BillingInfo {
 }
 
 export default function ProfilePage() {
+  const router = useRouter();
   const {
     clerkUser,
     isSignedIn,
+    isLoaded,
     isPremium,
     subscriptionStatus,
     isLoading: authLoading,
   } = useUser();
+
+  // Redirect to landing page if not authenticated
+  useEffect(() => {
+    if (isLoaded && !isSignedIn) {
+      router.push("/landing");
+    }
+  }, [isLoaded, isSignedIn, router]);
+
+  // Show loading state while checking authentication
+  if (!isLoaded) {
+    return (
+      <div className="min-h-screen bg-background text-primary flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-xl text-orange-300">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Don't render content if not signed in (will redirect)
+  if (!isSignedIn) {
+    return null;
+  }
   const [isEditing, setIsEditing] = useState(false);
   const [displayName, setDisplayName] = useState("");
   const [isLoading, setIsLoading] = useState(true);

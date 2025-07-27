@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { auth } from "@clerk/nextjs/server";
 import Stripe from "stripe";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
@@ -7,7 +8,25 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 
 export async function POST(req: NextRequest) {
   try {
+    // Check if user is authenticated
+    const { userId } = await auth();
+
+    if (!userId) {
+      return NextResponse.json(
+        {
+          success: false,
+          error:
+            "Authentication required. Please log in to upgrade your account.",
+        },
+        { status: 401 }
+      );
+    }
+
     const { priceId } = await req.json();
+
+    // Get user information for the checkout session
+    // Note: You might want to fetch the user's email from Clerk or Supabase
+    // For now, we'll let Stripe collect it
 
     // Create Checkout Sessions from body params
     const session = await stripe.checkout.sessions.create({
@@ -25,10 +44,12 @@ export async function POST(req: NextRequest) {
       customer_email: undefined, // You can add user email from Clerk here later
       metadata: {
         plan: "premium",
+        clerk_user_id: userId, // Add user ID to metadata for webhook processing
       },
       subscription_data: {
         metadata: {
           plan: "premium",
+          clerk_user_id: userId, // Add user ID to subscription metadata
         },
       },
     });

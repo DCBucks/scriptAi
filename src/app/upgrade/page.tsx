@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useUser } from "../../hooks/useUser";
 import {
   Brain,
   Crown,
@@ -24,6 +26,32 @@ import { createCheckoutSession } from "../../lib/stripe";
 export default function UpgradePage() {
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+  const { isLoaded, isSignedIn, clerkUser } = useUser();
+
+  // Redirect to landing page if not authenticated
+  useEffect(() => {
+    if (isLoaded && !isSignedIn) {
+      router.push("/landing");
+    }
+  }, [isLoaded, isSignedIn, router]);
+
+  // Show loading state while checking authentication
+  if (!isLoaded) {
+    return (
+      <div className="min-h-screen bg-background text-primary flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-xl text-orange-300">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Don't render content if not signed in (will redirect)
+  if (!isSignedIn) {
+    return null;
+  }
 
   const handleUpgrade = async () => {
     try {
@@ -34,7 +62,17 @@ export default function UpgradePage() {
       window.location.href = url;
     } catch (error) {
       console.error("Error creating checkout session:", error);
-      alert("Something went wrong. Please try again.");
+
+      // Check if it's an authentication error
+      if (
+        error instanceof Error &&
+        error.message.includes("Authentication required")
+      ) {
+        alert("Please log in to upgrade your account. Redirecting to login...");
+        router.push("/landing");
+      } else {
+        alert("Something went wrong. Please try again.");
+      }
     } finally {
       setIsLoading(false);
     }

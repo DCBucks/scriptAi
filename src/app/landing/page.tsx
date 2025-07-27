@@ -468,7 +468,7 @@ export default function LandingPage() {
               </SignedOut>
               <SignedIn>
                 <button
-                  onClick={handleGoToDashboard}
+                  onClick={() => router.push("/upgrade")}
                   className="w-full bg-gradient-to-r from-primary to-orange-500 hover:from-primary-hover hover:to-orange-600 text-black font-bold py-3 px-6 rounded-xl transition-all duration-300 shadow-lg shadow-primary/25 hover:shadow-primary/40"
                 >
                   Upgrade to Premium

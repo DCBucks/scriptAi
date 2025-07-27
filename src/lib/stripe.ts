@@ -21,6 +21,7 @@ export const createCheckoutSession = async (priceId?: string) => {
     const data = await response.json();
 
     if (!data.success) {
+      // Pass through the error message from the API
       throw new Error(data.error || "Failed to create checkout session");
     }
 
