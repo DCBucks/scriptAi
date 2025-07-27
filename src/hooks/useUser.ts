@@ -58,7 +58,16 @@ export function useUser() {
         }
       } catch (err) {
         console.error("Error syncing user:", err);
-        setError(err instanceof Error ? err.message : "Unknown error occurred");
+
+        // Don't show auth errors to user unless critical
+        const errorMessage =
+          err instanceof Error ? err.message : "Unknown error occurred";
+        if (
+          !errorMessage.includes("network") &&
+          !errorMessage.includes("timeout")
+        ) {
+          setError(errorMessage);
+        }
 
         // Try to fetch existing user if sync fails
         if (clerkUser?.id) {
@@ -68,6 +77,10 @@ export function useUser() {
             setError(null); // Clear error if we successfully fetched existing user
           } catch (fetchErr) {
             console.error("Error fetching existing user:", fetchErr);
+            // Only set error for critical failures
+            if (!fetchErr.toString().includes("network")) {
+              setError("Authentication service temporarily unavailable");
+            }
           }
         }
       } finally {

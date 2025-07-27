@@ -18,8 +18,8 @@ export default function ClientOnly({
   }, []);
 
   if (!hasMounted) {
-    return <>{fallback}</>;
+    return <div suppressHydrationWarning>{fallback}</div>;
   }
 
-  return <>{children}</>;
+  return <div suppressHydrationWarning>{children}</div>;
 }

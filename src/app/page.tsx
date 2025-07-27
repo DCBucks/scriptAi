@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "../hooks/useUser";
+import UserEmailDisplay from "../components/UserEmailDisplay";
 import {
   saveAudioFile,
   saveSummary,
@@ -1096,6 +1097,7 @@ function MainPageContent() {
 
   return (
     <div className="min-h-screen bg-background text-primary relative overflow-hidden">
+      <UserEmailDisplay />
       {/* Background decorative elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/5 rounded-full blur-3xl"></div>
