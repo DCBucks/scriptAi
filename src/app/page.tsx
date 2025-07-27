@@ -653,6 +653,26 @@ function MainPageContent() {
     error: authError,
   } = useUser();
 
+  // ALL HOOKS MUST BE CALLED BEFORE ANY CONDITIONAL LOGIC
+  const [uploadedFile, setUploadedFile] = useState<UploadedFile | null>(null);
+  const [processingStatus, setProcessingStatus] = useState<ProcessingStatus>({
+    stage: "idle",
+    progress: 0,
+    message: "",
+  });
+  const [summary, setSummary] = useState<Summary | null>(null);
+  const [transcript, setTranscript] = useState<string>("");
+  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
+  const [currentQuestion, setCurrentQuestion] = useState("");
+  const [isAskingQuestion, setIsAskingQuestion] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [showUpgradePrompt, setShowUpgradePrompt] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [processingProgress, setProcessingProgress] = useState(0);
+  const [isNavOpen, setIsNavOpen] = useState(false);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   // Handle authentication redirect - only redirect if definitely not signed in
   useEffect(() => {
     if (isLoaded && !isSignedIn) {
@@ -684,24 +704,6 @@ function MainPageContent() {
       </div>
     );
   }
-  const [uploadedFile, setUploadedFile] = useState<UploadedFile | null>(null);
-  const [processingStatus, setProcessingStatus] = useState<ProcessingStatus>({
-    stage: "idle",
-    progress: 0,
-    message: "",
-  });
-  const [summary, setSummary] = useState<Summary | null>(null);
-  const [transcript, setTranscript] = useState<string>("");
-  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
-  const [currentQuestion, setCurrentQuestion] = useState("");
-  const [isAskingQuestion, setIsAskingQuestion] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [showUpgradePrompt, setShowUpgradePrompt] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
-  const [processingProgress, setProcessingProgress] = useState(0);
-  const [isNavOpen, setIsNavOpen] = useState(false);
-
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // File validation function
   const validateFile = useCallback((file: File): string | null => {

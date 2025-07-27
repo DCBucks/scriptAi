@@ -233,6 +233,36 @@ function UploadsContent() {
   const router = useRouter();
   const { userId, isSignedIn, isLoaded, isInitialized, error } = useUser();
 
+  // ALL HOOKS MUST BE CALLED BEFORE ANY CONDITIONAL LOGIC
+  const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [analytics, setAnalytics] = useState<Analytics | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedFilter, setSelectedFilter] = useState("all");
+  const [sortBy, setSortBy] = useState("date");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+  const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [isEditing, setIsEditing] = useState<string | null>(null);
+  const [editingTranscript, setEditingTranscript] = useState("");
+  const [editingSummary, setEditingSummary] = useState("");
+  const [editingBulletPoints, setEditingBulletPoints] = useState<string[]>([]);
+  const [editingKeyTopics, setEditingKeyTopics] = useState<string[]>([]);
+  const [editingActionItems, setEditingActionItems] = useState<string[]>([]);
+  const [activeTab, setActiveTab] = useState<"files" | "tasks" | "assign">(
+    "files"
+  );
+  const [isLoading, setIsLoading] = useState(true);
+  const [currentPlayingAudio, setCurrentPlayingAudio] = useState<string | null>(
+    null
+  );
+  const [audioRefs, setAudioRefs] = useState<{
+    [key: string]: HTMLAudioElement;
+  }>({});
+  const [showActions, setShowActions] = useState<string | null>(null);
+  const [isNavOpen, setIsNavOpen] = useState(false);
+  const [hasSupabaseError, setHasSupabaseError] = useState(false);
+
   // Handle authentication redirect - only redirect if definitely not signed in
   useEffect(() => {
     if (isLoaded && !isSignedIn) {
@@ -264,34 +294,6 @@ function UploadsContent() {
       </div>
     );
   }
-  const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
-  const [tasks, setTasks] = useState<Task[]>([]);
-  const [analytics, setAnalytics] = useState<Analytics | null>(null);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedFilter, setSelectedFilter] = useState("all");
-  const [sortBy, setSortBy] = useState("date");
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
-  const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  const [isEditing, setIsEditing] = useState<string | null>(null);
-  const [editingTranscript, setEditingTranscript] = useState("");
-  const [editingSummary, setEditingSummary] = useState("");
-  const [editingBulletPoints, setEditingBulletPoints] = useState<string[]>([]);
-  const [editingKeyTopics, setEditingKeyTopics] = useState<string[]>([]);
-  const [editingActionItems, setEditingActionItems] = useState<string[]>([]);
-  const [activeTab, setActiveTab] = useState<"files" | "tasks" | "assign">(
-    "files"
-  );
-  const [isLoading, setIsLoading] = useState(true);
-  const [currentPlayingAudio, setCurrentPlayingAudio] = useState<string | null>(
-    null
-  );
-  const [audioRefs, setAudioRefs] = useState<{
-    [key: string]: HTMLAudioElement;
-  }>({});
-  const [showActions, setShowActions] = useState<string | null>(null);
-  const [isNavOpen, setIsNavOpen] = useState(false);
-  const [hasSupabaseError, setHasSupabaseError] = useState(false);
 
   // Load user audio files from Supabase
   useEffect(() => {

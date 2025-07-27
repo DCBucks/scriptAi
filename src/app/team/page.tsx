@@ -51,6 +51,14 @@ function TeamContent() {
     error,
   } = useUser();
 
+  // ALL HOOKS MUST BE CALLED BEFORE ANY CONDITIONAL LOGIC
+  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
+  const [isInviting, setIsInviting] = useState(false);
+  const [inviteEmail, setInviteEmail] = useState("");
+  const [inviteRole, setInviteRole] = useState<"admin" | "member">("member");
+  const [showActions, setShowActions] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
   // Handle authentication redirect - only redirect if definitely not signed in
   useEffect(() => {
     if (isLoaded && !isSignedIn) {
@@ -82,12 +90,6 @@ function TeamContent() {
       </div>
     );
   }
-  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
-  const [isInviting, setIsInviting] = useState(false);
-  const [inviteEmail, setInviteEmail] = useState("");
-  const [inviteRole, setInviteRole] = useState<"admin" | "member">("member");
-  const [showActions, setShowActions] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
 
   // Load team data
   useEffect(() => {
